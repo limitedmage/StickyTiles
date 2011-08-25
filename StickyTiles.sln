@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StickyTiles", "StickyTiles\StickyTiles.csproj", "{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A88824-9BDA-4344-BAD0-8A45C9CDB3BF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
