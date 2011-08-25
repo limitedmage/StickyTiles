@@ -1,0 +1,27 @@
+## Name ##
+
+StickyTiles
+
+## Category ##
+
+tools + productivity
+
+## Short description ##
+
+Pin your notes
+
+## Detailed Description ##
+
+Pin short sticky notes to your start screen! Choose text, color, and back side of the sticky tile.
+
+Created by Juliana Peña http://julianapena.com
+
+Open source! Grab the code at https://github.com/limitedmage/StickyTiles
+
+## Keywords ##
+
+notes, live tiles, sticky
+
+## Email address ##
+
+stickytiles@julianapena.com
