@@ -4,6 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:c4f="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
+    xmlns:c4fb="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
@@ -11,7 +14,8 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True"
+    toolkit:TiltEffect.IsTiltEnabled="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
@@ -30,59 +34,78 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ScrollViewer>
                 <StackPanel>
-                    <TextBlock>Front</TextBlock>
-                    <Grid>
+                    <!-- Front tile -->
+                    <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Front</TextBlock>
+                    <Grid Margin="12,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid Name="TilePreview" Width="173" Height="173">
-                            <Rectangle Width="173" Height="173" Fill="{StaticResource PhoneAccentBrush}" />
-                            <TextBlock TextWrapping="Wrap" Margin="12,6">
-                                Buy milk<LineBreak/>
-                                Pay bills<LineBreak/>
-                                Do math homework
-                            </TextBlock>
+                        <Grid Name="TilePreview" Width="173" Height="173" VerticalAlignment="Top">
+                            <Rectangle Width="173" Height="173">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{Binding FrontColor}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" />
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" />
-                            <TextBox Grid.Column="1" AcceptsReturn="True" />
+                            <Button Content="Color" Click="ToggleFrontColorPicker">
+                                <Button.Background>
+                                    <SolidColorBrush Color="{Binding FrontColor}" />
+                                </Button.Background>
+                            </Button>
+                            <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
-                    <TextBlock>Back</TextBlock>
-                    <Grid>
+                    
+                    <!-- Back tile -->
+                    <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
+                        <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Back</TextBlock>
+                        <CheckBox Name="EnableBack" Margin="-12" />
+                    </StackPanel>
+                    <Grid Margin="12,0,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Grid Name="BackTilePreview" Width="173" Height="173">
-                            <Rectangle Width="173" Height="173" Fill="{StaticResource PhoneAccentBrush}" />
-                            <TextBlock TextWrapping="Wrap" Margin="12,6">
-                                Get mom a present
-                            </TextBlock>
+                        <Grid Name="BackTilePreview" Width="173" Height="173" VerticalAlignment="Top">
+                            <Rectangle Width="173" Height="173">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{Binding BackColor}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}"/>
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" />
-                            <TextBox Grid.Column="1" AcceptsReturn="True" />
+                            <Button Content="Color" Click="ToggleBackColorPicker">
+                                <Button.Background>
+                                    <SolidColorBrush Color="{Binding BackColor}" />
+                                </Button.Background>
+                            </Button>
+                            <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
-                    <Button Name="PinButton" Content="Pin" Click="PinButton_Click" />
+                    
+                    <!-- Pin Button -->
+                    <Button Name="PinButton" Content="Pin" Click="PinButton_Click" Margin="0,24,0,0" />
                 </StackPanel>
             </ScrollViewer>
             
+            <c4f:ProgressOverlay Name="FrontColorPickerOverlay" Visibility="Collapsed">
+                <StackPanel>
+                    <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" />
+                    <Button Content="OK" Click="ToggleFrontColorPicker" Background="{StaticResource PhoneBackgroundBrush}" />
+                </StackPanel>
+            </c4f:ProgressOverlay>
+
+            <c4f:ProgressOverlay Name="BackColorPickerOverlay" Visibility="Collapsed">
+                <StackPanel>
+                    <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" />
+                    <Button Content="OK" Click="ToggleBackColorPicker" Background="{StaticResource PhoneBackgroundBrush}" />
+                </StackPanel>
+            </c4f:ProgressOverlay>
         </Grid>
     </Grid>
- 
-    <!--Sample code showing usage of ApplicationBar-->
-    <!--<phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>-->
 
 </phone:PhoneApplicationPage>
