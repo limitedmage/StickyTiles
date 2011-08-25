@@ -124,6 +124,12 @@ namespace StickyTiles {
             }
         }
 
+        private void EnableBack_Checked(object sender, RoutedEventArgs e) {
+            bool enable = EnableBack.IsChecked.GetValueOrDefault();
+            BackTextBox.IsEnabled = enable;
+            BackColorButton.IsEnabled = enable;
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -135,5 +141,7 @@ namespace StickyTiles {
         }
 
         #endregion
+
+        
     }
 }

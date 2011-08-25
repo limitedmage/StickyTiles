@@ -32,8 +32,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer>
-                <StackPanel>
+            <ScrollViewer Margin="0,0,-12,0">
+                <StackPanel Margin="0,0,12,0">
                     <!-- Front tile -->
                     <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Front</TextBlock>
                     <Grid Margin="12,0,0,0">
@@ -47,22 +47,22 @@
                                     <SolidColorBrush Color="{Binding FrontColor}" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" />
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" Foreground="White" />
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" Click="ToggleFrontColorPicker">
+                            <Button Content="Color" Click="ToggleFrontColorPicker" Foreground="White" Margin="0,-12,0,0">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding FrontColor}" />
                                 </Button.Background>
                             </Button>
-                            <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" c4fb:TextBinding.UpdateSourceOnChange="True" />
+                            <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
                     
                     <!-- Back tile -->
                     <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
                         <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Back</TextBlock>
-                        <CheckBox Name="EnableBack" Margin="-12" />
+                        <CheckBox Name="EnableBack" Margin="-12" Checked="EnableBack_Checked" Unchecked="EnableBack_Checked" />
                     </StackPanel>
                     <Grid Margin="12,0,0,0">
                         <Grid.ColumnDefinitions>
@@ -75,15 +75,15 @@
                                     <SolidColorBrush Color="{Binding BackColor}" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}"/>
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" Foreground="White" />  
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" Click="ToggleBackColorPicker">
+                            <Button IsEnabled="False" Name="BackColorButton" Content="Color" Click="ToggleBackColorPicker" Foreground="White" Margin="0,-12,0,0">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding BackColor}" />
                                 </Button.Background>
                             </Button>
-                            <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" c4fb:TextBinding.UpdateSourceOnChange="True" />
+                            <TextBox IsEnabled="False" Name="BackTextBox" Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
                     
