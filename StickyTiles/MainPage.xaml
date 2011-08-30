@@ -9,7 +9,7 @@
     xmlns:c4fb="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -50,7 +50,7 @@
                             <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" Foreground="White" />
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" Click="ToggleFrontColorPicker" Foreground="White" Margin="0,-12,0,0">
+                            <Button Content="Color" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding FrontColor}" />
                                 </Button.Background>
@@ -78,7 +78,7 @@
                             <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" Foreground="White" />  
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button IsEnabled="False" Name="BackColorButton" Content="Color" Click="ToggleBackColorPicker" Foreground="White" Margin="0,-12,0,0">
+                            <Button IsEnabled="False" Name="BackColorButton" Content="Color" Click="ShowBackColorPicker" Foreground="White" Margin="0,-12,0,0">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding BackColor}" />
                                 </Button.Background>
@@ -86,26 +86,26 @@
                             <TextBox IsEnabled="False" Name="BackTextBox" Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
-                    
-                    <!-- Pin Button -->
-                    <Button Name="PinButton" Content="Pin" Click="PinButton_Click" Margin="0,24,0,0" />
                 </StackPanel>
             </ScrollViewer>
-            
-            <c4f:ProgressOverlay Name="FrontColorPickerOverlay" Visibility="Collapsed">
-                <StackPanel>
-                    <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" />
-                    <Button Content="OK" Click="ToggleFrontColorPicker" Background="{StaticResource PhoneBackgroundBrush}" />
-                </StackPanel>
-            </c4f:ProgressOverlay>
-
-            <c4f:ProgressOverlay Name="BackColorPickerOverlay" Visibility="Collapsed">
-                <StackPanel>
-                    <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" />
-                    <Button Content="OK" Click="ToggleBackColorPicker" Background="{StaticResource PhoneBackgroundBrush}" />
-                </StackPanel>
-            </c4f:ProgressOverlay>
         </Grid>
+
+        <c4f:ProgressOverlay Name="FrontColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
+            <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" />
+        </c4f:ProgressOverlay>
+
+        <c4f:ProgressOverlay Name="BackColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
+            <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" />
+        </c4f:ProgressOverlay>
     </Grid>
+    
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar>
+            <shell:ApplicationBarIconButton Text="pin" IconUri="/icons/appbar.pin.rest.png" Click="PinButton_Click" />
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="about" Click="About_Click" />
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

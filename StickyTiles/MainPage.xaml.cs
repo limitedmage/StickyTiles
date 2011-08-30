@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -8,12 +10,10 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
-using System.Windows.Media.Imaging;
-using System.IO.IsolatedStorage;
 using Microsoft.Phone.Shell;
-using System.ComponentModel;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage, INotifyPropertyChanged {
@@ -64,6 +64,9 @@ namespace StickyTiles {
             }
         }
 
+        private ApplicationBar MainAppbar;
+        private ApplicationBar OverlayAppbar;
+
         #endregion
 
         // Constructor
@@ -74,9 +77,31 @@ namespace StickyTiles {
 
             FrontColor = (Color) App.Current.Resources["PhoneAccentColor"];
             BackColor = (Color)App.Current.Resources["PhoneAccentColor"];
+
+            CreateAppbars();
+            ApplicationBar = MainAppbar;
         }
 
-        private void PinButton_Click(object sender, RoutedEventArgs e) {
+        private void CreateAppbars() {
+            MainAppbar = new ApplicationBar();
+
+            ApplicationBarIconButton pin = new ApplicationBarIconButton(new Uri("/icons/appbar.pin.rest.png", UriKind.Relative));
+            pin.Text = "pin";
+            pin.Click += PinButton_Click;
+            MainAppbar.Buttons.Add(pin);
+
+            ApplicationBarMenuItem about = new ApplicationBarMenuItem("about");
+            about.Click += About_Click;
+            MainAppbar.MenuItems.Add(about);
+
+            OverlayAppbar = new ApplicationBar();
+            ApplicationBarIconButton ok = new ApplicationBarIconButton(new Uri("/icons/appbar.check.rest.png", UriKind.Relative));
+            ok.Text = "ok";
+            ok.Click += ClosePickers;
+            OverlayAppbar.Buttons.Add(ok);
+        }
+
+        private void PinButton_Click(object sender, EventArgs e) {
             long id = DateTime.Now.Ticks;
 
             WriteableBitmap front = new WriteableBitmap(TilePreview, null);
@@ -108,26 +133,46 @@ namespace StickyTiles {
             ShellTile.Create(new Uri("/MainPage.xaml?tile=" + id, UriKind.Relative), tile);
         }
 
-        private void ToggleFrontColorPicker(object sender, RoutedEventArgs e) {
-            if (FrontColorPickerOverlay.Visibility == System.Windows.Visibility.Visible) {
-                FrontColorPickerOverlay.Hide();
-            } else {
-                FrontColorPickerOverlay.Show();
-            }
+        private void ShowFrontColorPicker(object sender, RoutedEventArgs e) {
+            FrontColorPickerOverlay.Show();
+            ApplicationBar = OverlayAppbar;
         }
 
-        private void ToggleBackColorPicker(object sender, RoutedEventArgs e) {
-            if (BackColorPickerOverlay.Visibility == System.Windows.Visibility.Visible) {
-                BackColorPickerOverlay.Hide();
-            } else {
-                BackColorPickerOverlay.Show();
-            }
+        private void ShowBackColorPicker(object sender, RoutedEventArgs e) {
+            BackColorPickerOverlay.Show();
+            ApplicationBar = OverlayAppbar;
+        }
+
+        private void ClosePickers(object sender, EventArgs e) {
+            FrontColorPickerOverlay.Hide();
+            BackColorPickerOverlay.Hide();
+            ApplicationBar = MainAppbar;
         }
 
         private void EnableBack_Checked(object sender, RoutedEventArgs e) {
             bool enable = EnableBack.IsChecked.GetValueOrDefault();
             BackTextBox.IsEnabled = enable;
             BackColorButton.IsEnabled = enable;
+        }
+
+        protected override void OnBackKeyPress(CancelEventArgs e) {
+            if (FrontColorPickerOverlay.Visibility == System.Windows.Visibility.Visible) {
+                FrontColorPickerOverlay.Hide();
+                ApplicationBar = MainAppbar;
+                e.Cancel = true;
+            }
+            
+            if (BackColorPickerOverlay.Visibility == System.Windows.Visibility.Visible) {
+                BackColorPickerOverlay.Hide();
+                ApplicationBar = MainAppbar;
+                e.Cancel = true;
+            }
+
+            base.OnBackKeyPress(e);
+        }
+
+        private void About_Click(object sender, EventArgs e) {
+            MessageBox.Show("Created by Juliana Peña\nhttp://julianapena.com", "StickyTiles 1.0", MessageBoxButton.OK);
         }
 
         #region INotifyPropertyChanged Members
@@ -141,7 +186,5 @@ namespace StickyTiles {
         }
 
         #endregion
-
-        
     }
 }
