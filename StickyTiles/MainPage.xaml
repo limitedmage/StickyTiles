@@ -91,11 +91,11 @@
         </Grid>
 
         <c4f:ProgressOverlay Name="FrontColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
-            <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" />
+            <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" Margin="24,0" />
         </c4f:ProgressOverlay>
 
         <c4f:ProgressOverlay Name="BackColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
-            <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" />
+            <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" Margin="24,0" />
         </c4f:ProgressOverlay>
     </Grid>
     
