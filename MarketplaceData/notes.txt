@@ -14,6 +14,10 @@ Pin your notes
 
 Pin short sticky notes to your start screen! Choose text, color, and back side of the sticky tile.
 
+New in 2.0:
+- Edit a tile by tapping it! (only works for tiles created with version 2.0)
+- Customize text size and color
+
 Created by Juliana Peña http://julianapena.com
 
 Open source! Grab the code at https://github.com/limitedmage/StickyTiles
