@@ -47,14 +47,32 @@
                                     <SolidColorBrush Color="{Binding FrontColor}" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" Foreground="White" />
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding FrontText}" FontSize="{Binding FrontSize}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding FrontTextColor}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button Content="Color" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0">
-                                <Button.Background>
-                                    <SolidColorBrush Color="{Binding FrontColor}" />
-                                </Button.Background>
-                            </Button>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <Button Content="BG" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0">
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{Binding FrontColor}" />
+                                    </Button.Background>
+                                </Button>
+                                <Button Content="FG" Click="ShowFrontTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="1">
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{Binding FrontTextColor}" />
+                                    </Button.Background>
+                                </Button>
+                            </Grid>
+                            
+                            <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Height="20" Margin="12,0" />
                             <TextBox Grid.Column="1" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
@@ -62,7 +80,7 @@
                     <!-- Back tile -->
                     <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
                         <TextBlock Style="{StaticResource PhoneTextLargeStyle}">Back</TextBlock>
-                        <CheckBox Name="EnableBack" Margin="-12" Checked="EnableBack_Checked" Unchecked="EnableBack_Checked" />
+                        <CheckBox Name="EnableBack" Margin="-12" IsChecked="{Binding HasBack, Mode=TwoWay}" />
                     </StackPanel>
                     <Grid Margin="12,0,0,0">
                         <Grid.ColumnDefinitions>
@@ -75,15 +93,32 @@
                                     <SolidColorBrush Color="{Binding BackColor}" />
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" Foreground="White" />  
+                            <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" FontSize="{Binding BackSize}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding BackTextColor}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
                         </Grid>
                         <StackPanel Grid.Column="1">
-                            <Button IsEnabled="False" Name="BackColorButton" Content="Color" Click="ShowBackColorPicker" Foreground="White" Margin="0,-12,0,0">
-                                <Button.Background>
-                                    <SolidColorBrush Color="{Binding BackColor}" />
-                                </Button.Background>
-                            </Button>
-                            <TextBox IsEnabled="False" Name="BackTextBox" Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Button IsEnabled="{Binding HasBack}" Content="BG" Click="ShowBackColorPicker" Foreground="White" Margin="0,-12,0,0">
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{Binding BackColor}" />
+                                    </Button.Background>
+                                </Button>
+                                <Button IsEnabled="{Binding HasBack}" Content="FG" Click="ShowBackTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="1">
+                                    <Button.Background>
+                                        <SolidColorBrush Color="{Binding BackTextColor}" />
+                                    </Button.Background>
+                                </Button>
+                            </Grid>
+                            <c4f:SuperSlider IsEnabled="{Binding HasBack}" Value="{Binding BackSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Height="20" Margin="12,0" />
+                            <TextBox IsEnabled="{Binding HasBack}" Name="BackTextBox" Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -94,14 +129,22 @@
             <c4f:ColorPicker Name="FrontColorPicker" Height="500" Color="{Binding FrontColor, Mode=TwoWay}" Margin="24,0" />
         </c4f:ProgressOverlay>
 
+        <c4f:ProgressOverlay Name="FrontTextColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
+            <c4f:ColorPicker Name="FrontTextColorPicker" Height="500" Color="{Binding FrontTextColor, Mode=TwoWay}" Margin="24,0" />
+        </c4f:ProgressOverlay>
+
         <c4f:ProgressOverlay Name="BackColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
             <c4f:ColorPicker Name="BackColorPicker" Height="500" Color="{Binding BackColor, Mode=TwoWay}" Margin="24,0" />
+        </c4f:ProgressOverlay>
+
+        <c4f:ProgressOverlay Name="BackTextColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">
+            <c4f:ColorPicker Name="BackTextColorPicker" Height="500" Color="{Binding BackTextColor, Mode=TwoWay}" Margin="24,0" />
         </c4f:ProgressOverlay>
     </Grid>
     
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton Text="pin" IconUri="/icons/appbar.pin.rest.png" Click="PinButton_Click" />
+            <shell:ApplicationBarIconButton Text="pin" IconUri="/icons/appbar.save.rest.png" Click="PinButton_Click" />
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="about" Click="About_Click" />
             </shell:ApplicationBar.MenuItems>

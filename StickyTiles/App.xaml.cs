@@ -21,6 +21,8 @@ namespace StickyTiles {
         /// <returns>The root frame of the Phone Application.</returns>
         public PhoneApplicationFrame RootFrame { get; private set; }
 
+        public static new App Current { get { return (App)Application.Current; } }
+
         /// <summary>
         /// Constructor for the Application object.
         /// </summary>
