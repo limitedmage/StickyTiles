@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
@@ -8,7 +9,8 @@ using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
-using System.IO;
+using Microsoft.Xna.Framework.GamerServices;
+using System.Collections.Generic;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
@@ -140,8 +142,26 @@ namespace StickyTiles {
         }
 
         private void ShowFrontColorPicker(object sender, RoutedEventArgs e) {
-            FrontColorPickerOverlay.Show();
-            ApplicationBar = OverlayAppbar;
+            Guide.BeginShowMessageBox(
+                "Front Tile Background", 
+                "Use color or image as tile background?", 
+                new List<string> { "Color", "Image" }, 
+                0, 
+                MessageBoxIcon.Alert, 
+                r => {
+                    var returned = Guide.EndShowMessageBox(r);
+                    if (returned == 0) {
+                        Dispatcher.BeginInvoke(() => {
+                            Sticky.FrontPicBytes = null;
+                            FrontColorPickerOverlay.Show();
+                            ApplicationBar = OverlayAppbar;
+                        });
+                    } else if (returned == 1) {
+                        ShowPicPicker(bytes => Sticky.FrontPicBytes = bytes);
+                    }
+                }, 
+                null
+            );
         }
 
         private void ShowFrontTextColorPicker(object sender, RoutedEventArgs e) {
@@ -149,22 +169,32 @@ namespace StickyTiles {
             ApplicationBar = OverlayAppbar;
         }
 
-        private void ShowFrontPicPicker(object sender, RoutedEventArgs e) {
-            ShowPicPicker(bytes => Sticky.FrontPicBytes = bytes);
-        }
-
         private void ShowBackColorPicker(object sender, RoutedEventArgs e) {
-            BackColorPickerOverlay.Show();
-            ApplicationBar = OverlayAppbar;
+            Guide.BeginShowMessageBox(
+                "Back Tile Background",
+                "Use color or image as tile background?",
+                new List<string> { "color", "image" },
+                0,
+                MessageBoxIcon.Alert,
+                r => {
+                    var returned = Guide.EndShowMessageBox(r);
+                    if (returned == 0) {
+                        Dispatcher.BeginInvoke(() => {
+                            Sticky.BackPicBytes = null;
+                            BackColorPickerOverlay.Show();
+                            ApplicationBar = OverlayAppbar;
+                        });
+                    } else if (returned == 1) {
+                        ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
+                    }
+                },
+                null
+            );
         }
 
         private void ShowBackTextColorPicker(object sender, RoutedEventArgs e) {
             BackTextColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
-        }
-
-        private void ShowBackPicPicker(object sender, RoutedEventArgs e) {
-            ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
         }
 
         private void ClosePickers(object sender, EventArgs e) {
@@ -205,7 +235,7 @@ namespace StickyTiles {
             t.Completed += (s, ev) => {
                 if (ev.TaskResult == TaskResult.OK) {
                     if (ev.ChosenPhoto != null) {
-                        Dispatcher.BeginInvoke(() => callback(GetBytesFromStream(ev.ChosenPhoto)));
+                        Dispatcher.BeginInvoke(() => callback(GetJpegBytesFromStream(ev.ChosenPhoto)));
                     }
                 }
             };
@@ -213,17 +243,18 @@ namespace StickyTiles {
             t.Show();
         }
 
-        private byte[] GetBytesFromStream(Stream stream) {
-            stream.Position = 0;
+        private byte[] GetJpegBytesFromStream(Stream stream) {
+            byte[] bytes;
 
-            var ms = new MemoryStream();
-            var buffer = new byte[stream.Length];
-            int read;
-            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
-                ms.Write(buffer, 0, read);
+            using (var ms = new MemoryStream()) {
+                var bitmap = new BitmapImage();
+                bitmap.SetSource(stream);
+                var wb = new WriteableBitmap(bitmap);
+                wb.SaveJpeg(ms, wb.PixelWidth, wb.PixelHeight, 0, 85);
+                bytes = ms.ToArray();
             }
 
-            return ms.ToArray();
+            return bytes;
         }
 
         Uri GetTileUri(string id) {

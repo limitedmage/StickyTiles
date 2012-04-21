@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Windows.Media.Imaging;
 using System.IO;
+using Microsoft.Phone;
 
 namespace StickyTiles {
     [DataContract]
@@ -56,12 +57,10 @@ namespace StickyTiles {
             }
         }
 
-        public BitmapImage FrontPic {
+        public ImageSource FrontPic {
             get {
                 if (FrontPicBytes != null) {
-                    var bm = new BitmapImage();
-                    bm.SetSource(new MemoryStream(FrontPicBytes));
-                    return bm;
+                    return GetImageFromJpegBytes(FrontPicBytes);
                 } else {
                     return null;
                 }
@@ -129,12 +128,10 @@ namespace StickyTiles {
             }
         }
 
-        public BitmapImage BackPic {
+        public ImageSource BackPic {
             get {
                 if (BackPicBytes != null) {
-                    var bm = new BitmapImage();
-                    bm.SetSource(new MemoryStream(BackPicBytes));
-                    return bm;
+                    return GetImageFromJpegBytes(BackPicBytes);
                 } else {
                     return null;
                 }
@@ -164,6 +161,16 @@ namespace StickyTiles {
                 _hasBack = value;
                 Changed("HasBack");
             }
+        }
+
+        private WriteableBitmap GetImageFromJpegBytes(byte[] bytes) {
+            WriteableBitmap bm;
+            
+            using (var ms = new MemoryStream(bytes)) {
+                bm = PictureDecoder.DecodeJpeg(ms);
+            }
+
+            return bm;
         }
 
         #region INotifyPropertyChanged Members

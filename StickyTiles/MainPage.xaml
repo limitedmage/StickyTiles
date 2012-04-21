@@ -49,7 +49,6 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                             
                         <Grid.RowDefinitions>
@@ -59,19 +58,18 @@
 
                         <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12" />
 
-                        <Button Content="BG" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
+                        <Button Content="Background" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding FrontColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="FG" Click="ShowFrontTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
+                        <Button Content="Foreground" Click="ShowFrontTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding FrontTextColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="PIC" Margin="0,-12,0,0" Grid.Column="3" Click="ShowFrontPicPicker"/>
 
-                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
@@ -106,7 +104,6 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
@@ -116,19 +113,18 @@
 
                         <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" IsEnabled="{Binding HasBack}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12" />
 
-                        <Button Content="BG" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
+                        <Button Content="Background" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding BackColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="FG" Click="ShowBackTextColorPicker" IsEnabled="{Binding HasBack}" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
+                        <Button Content="Foreground" Click="ShowBackTextColorPicker" IsEnabled="{Binding HasBack}" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding BackTextColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="PIC" IsEnabled="{Binding HasBack}" Margin="0,-12,0,0" Grid.Column="3" Click="ShowBackPicPicker"/>
 
-                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" IsEnabled="{Binding HasBack}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" IsEnabled="{Binding HasBack}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
