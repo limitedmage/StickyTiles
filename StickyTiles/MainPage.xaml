@@ -43,6 +43,7 @@
                             </TextBlock.Foreground>
                         </TextBlock>
                     </Grid>
+                    
                     <Grid Grid.Row="1" Margin="0,12,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20" />
@@ -77,56 +78,61 @@
             
             <!-- Back tile -->
             <controls:PivotItem Header="back">
-                <ScrollViewer Margin="12,0,-12,0">
-                    <StackPanel Margin="0,0,12,0">
-                        <CheckBox Name="EnableBack" IsChecked="{Binding HasBack, Mode=TwoWay}" Content="Enable back tile" Margin="-12,-12,-12,0" />
-                        
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                <Grid Margin="12,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
-                            <Grid Name="BackTilePreview" Width="173" Height="173" VerticalAlignment="Top">
-                                <Rectangle Width="173" Height="173">
-                                    <Rectangle.Fill>
-                                        <SolidColorBrush Color="{Binding BackColor}" />
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                                <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" FontSize="{Binding BackSize}">
-                                    <TextBlock.Foreground>
-                                        <SolidColorBrush Color="{Binding BackTextColor}" />
-                                    </TextBlock.Foreground>
-                                </TextBlock>
-                            </Grid>
-                            <StackPanel Grid.Column="1">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                    <CheckBox Name="EnableBack" IsChecked="{Binding HasBack, Mode=TwoWay}" Content="Enable back tile" Margin="-12,-12,-12,0" />
 
-                                    <Button IsEnabled="{Binding HasBack}" Content="BG" Click="ShowBackColorPicker" Foreground="White" Margin="0,-12,0,0">
-                                        <Button.Background>
-                                            <SolidColorBrush Color="{Binding BackColor}" />
-                                        </Button.Background>
-                                    </Button>
-                                    <Button IsEnabled="{Binding HasBack}" Content="FG" Click="ShowBackTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="1">
-                                        <Button.Background>
-                                            <SolidColorBrush Color="{Binding BackTextColor}" />
-                                        </Button.Background>
-                                    </Button>
-                                </Grid>
-                                <c4f:SuperSlider IsEnabled="{Binding HasBack}" Value="{Binding BackSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Height="20" Margin="12,0" />
-                                <TextBox IsEnabled="{Binding HasBack}" Name="BackTextBox" Grid.Column="1" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" />
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
+                    <Grid Name="BackTilePreview" Width="173" Height="173" VerticalAlignment="Top" Grid.Row="1">
+                        <Rectangle Width="173" Height="173">
+                            <Rectangle.Fill>
+                                <SolidColorBrush Color="{Binding BackColor}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Image Width="173" Height="173" Source="{Binding BackPic}" />
+                        <TextBlock TextWrapping="Wrap" Margin="12,6" Text="{Binding BackText}" FontSize="{Binding BackSize}">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="{Binding BackTextColor}" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </Grid>
+                    
+                    <Grid Grid.Row="2" Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" IsEnabled="{Binding HasBack}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12" />
+
+                        <Button Content="BG" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
+                            <Button.Background>
+                                <SolidColorBrush Color="{Binding BackColor}" />
+                            </Button.Background>
+                        </Button>
+                        <Button Content="FG" Click="ShowBackTextColorPicker" IsEnabled="{Binding HasBack}" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
+                            <Button.Background>
+                                <SolidColorBrush Color="{Binding BackTextColor}" />
+                            </Button.Background>
+                        </Button>
+                        <Button Content="PIC" IsEnabled="{Binding HasBack}" Margin="0,-12,0,0" Grid.Column="3" Click="ShowBackPicPicker"/>
+
+                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" IsEnabled="{Binding HasBack}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" />
+                    </Grid>
+                </Grid>
             </controls:PivotItem>
         </controls:Pivot>
-        
-        
 
 
         <c4f:ProgressOverlay Name="FrontColorPickerOverlay" Visibility="Collapsed" Grid.RowSpan="2">

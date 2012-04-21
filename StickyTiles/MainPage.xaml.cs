@@ -79,6 +79,8 @@ namespace StickyTiles {
             }
 
             DataContext = Sticky;
+
+            DeleteOldTiles();
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e) {
@@ -101,7 +103,7 @@ namespace StickyTiles {
             settings[id] = Sticky;
 
             WriteableBitmap front = new WriteableBitmap(TilePreview, null);
-            string frontFilename = "Shared/ShellContent/" + id + "-front.jpg";
+            string frontFilename = GetTileFilename(id);
 
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
                 using (IsolatedStorageFileStream fs = isf.CreateFile(frontFilename)) {
@@ -115,7 +117,7 @@ namespace StickyTiles {
 
             if (EnableBack.IsChecked.GetValueOrDefault()) {
                 WriteableBitmap back = new WriteableBitmap(BackTilePreview, null);
-                string backFilename = "Shared/ShellContent/" + id + "-back.jpg";
+                string backFilename = GetTileFilename(id, true);
 
                 using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
                     using (IsolatedStorageFileStream fs = isf.CreateFile(backFilename)) {
@@ -161,7 +163,7 @@ namespace StickyTiles {
             ApplicationBar = OverlayAppbar;
         }
 
-        private void ShowFrontBackPicker(object sender, RoutedEventArgs e) {
+        private void ShowBackPicPicker(object sender, RoutedEventArgs e) {
             ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
         }
 
@@ -230,6 +232,38 @@ namespace StickyTiles {
 
         ShellTile GetTile(string id) {
             return ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri == GetTileUri(id));
+        }
+
+        string GetTileFilename(string id, bool back = false) {
+            if (!back) {
+                return "Shared/ShellContent/" + id + "-front.jpg";
+            } else {
+                return "Shared/ShellContent/" + id + "-back.jpg";
+            }
+        }
+
+        private void DeleteOldTiles() {
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (s, e) => {
+                for (int i = 0; i < settings.Count; i++) {
+                    var id = settings.ElementAt(i).Key;
+                    if (GetTile(id) == null) {
+                        var frontfile = GetTileFilename(id);
+                        var backfile = GetTileFilename(id);
+
+                        using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
+                            isf.DeleteFile(frontfile);
+                            isf.DeleteFile(backfile);
+                        }
+
+                        settings.Remove(id);
+                        i--;
+                    }
+                }
+            };
+
+            worker.RunWorkerAsync();
         }
 
         #endregion
