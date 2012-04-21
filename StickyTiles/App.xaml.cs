@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using System.IO;
 
 namespace StickyTiles {
     public partial class App : Application {
@@ -57,14 +58,35 @@ namespace StickyTiles {
 
         }
 
+        private void InitAnalytics() {
+            // Init flurry analytics
+            var uri = new Uri("FlurryApiKey.txt", UriKind.RelativeOrAbsolute);
+            var resourceStream = App.GetResourceStream(uri);
+            string apikey;
+
+            if (resourceStream != null) {
+                using (var sr = new StreamReader(resourceStream.Stream)) {
+                    apikey = sr.ReadLine().Trim();
+                }
+
+                FlurryWP7SDK.Api.SetSecureTransportEnabled();
+                FlurryWP7SDK.Api.StartSession(apikey);
+                FlurryWP7SDK.Api.SetVersion("StickyTiles 3.0");
+            }
+        }
+
         // Code to execute when the application is launching (eg, from Start)
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e) {
+            InitAnalytics();
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e) {
+            if (!e.IsApplicationInstancePreserved) {
+                InitAnalytics();
+            }
         }
 
         // Code to execute when the application is deactivated (sent to background)
