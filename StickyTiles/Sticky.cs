@@ -1,6 +1,8 @@
 ﻿using System.Windows.Media;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace StickyTiles {
     [DataContract]
@@ -54,6 +56,31 @@ namespace StickyTiles {
             }
         }
 
+        public BitmapImage FrontPic {
+            get {
+                if (FrontPicBytes != null) {
+                    var bm = new BitmapImage();
+                    bm.SetSource(new MemoryStream(FrontPicBytes));
+                    return bm;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        private byte[] _frontPicBytes;
+        [DataMember]
+        public byte[] FrontPicBytes {
+            get {
+                return _frontPicBytes;
+            }
+            set {
+                _frontPicBytes = value;
+                Changed("FrontPicBytes");
+                Changed("FrontPic");
+            }
+        }
+
         private string _backText;
         [DataMember]
         public string BackText {
@@ -99,6 +126,31 @@ namespace StickyTiles {
             set {
                 _backSize = value;
                 Changed("BackSize");
+            }
+        }
+
+        public BitmapImage BackPic {
+            get {
+                if (BackPicBytes != null) {
+                    var bm = new BitmapImage();
+                    bm.SetSource(new MemoryStream(BackPicBytes));
+                    return bm;
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        private byte[] _backPicBytes;
+        [DataMember]
+        public byte[] BackPicBytes {
+            get {
+                return _backPicBytes;
+            }
+            set {
+                _backPicBytes = value;
+                Changed("BackPicBytes");
+                Changed("BackPic");
             }
         }
 

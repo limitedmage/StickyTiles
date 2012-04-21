@@ -7,6 +7,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Tasks;
+using System.IO;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
@@ -57,6 +59,8 @@ namespace StickyTiles {
                     DataContext = Sticky;
                     return;
                 }
+
+                MessageBox.Show(id);
             }
 
             Sticky = new Sticky {
@@ -165,6 +169,37 @@ namespace StickyTiles {
 
         private void About_Click(object sender, EventArgs e) {
             MessageBox.Show("Created by Juliana Peña\nhttp://julianapena.com", "StickyTiles 2.0", MessageBoxButton.OK);
+        }
+
+        private void ShowFrontPicPicker(object sender, RoutedEventArgs e) {
+            var t = new PhotoChooserTask();
+            t.PixelHeight = 173;
+            t.PixelWidth = 173;
+            t.ShowCamera = true;
+
+            t.Completed += (s, ev) => {
+                if (ev.TaskResult == TaskResult.OK) {
+                    if (ev.ChosenPhoto != null) {
+                        var stream = ev.ChosenPhoto;
+                        stream.Position = 0;
+
+                        var ms = new MemoryStream();
+                        var buffer = new byte[stream.Length];
+                        int read;
+                        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+                            ms.Write(buffer, 0, read);
+                        }
+
+                        Dispatcher.BeginInvoke(() => {
+                            Sticky.FrontPicBytes = ms.ToArray();
+                        });
+                    }
+                }
+            };
+            
+            t.Show();
+
+            
         }
     }
 }
