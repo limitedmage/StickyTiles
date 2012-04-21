@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -11,7 +12,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.GamerServices;
-using System.Text.RegularExpressions;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
@@ -70,6 +70,8 @@ namespace StickyTiles {
                 var button = (MainAppbar.Buttons[0] as ApplicationBarIconButton);
                 button.IconUri = new Uri("/icons/appbar.save.rest.png", UriKind.Relative);
                 button.Text = "save";
+
+                FlurryWP7SDK.Api.LogEvent("Editing tile");
             } else if (State.ContainsKey("sticky")) {
                 // Restore from tombstone
                 Sticky = State["sticky"] as Sticky;
@@ -141,10 +143,14 @@ namespace StickyTiles {
             var shelltile = GetTile(id);
 
             if (shelltile != null) {
+                FlurryWP7SDK.Api.LogEvent("Updated existing tile");
+
                 shelltile.Update(tile);
                 Focus();
                 MessageBox.Show("Your updated tile should be in your start screen.", "Tile updated", MessageBoxButton.OK);
             } else {
+                FlurryWP7SDK.Api.LogEvent("Pinned new tile");
+
                 ShellTile.Create(GetTileUri(id), tile);
             }
         }
@@ -159,12 +165,16 @@ namespace StickyTiles {
                 r => {
                     var returned = Guide.EndShowMessageBox(r);
                     if (returned == 0) {
+                        FlurryWP7SDK.Api.LogEvent("Changing front color");
+
                         Dispatcher.BeginInvoke(() => {
                             Sticky.FrontPicBytes = null;
                             FrontColorPickerOverlay.Show();
                             ApplicationBar = OverlayAppbar;
                         });
                     } else if (returned == 1) {
+                        FlurryWP7SDK.Api.LogEvent("Changing front image");
+
                         ShowPicPicker(bytes => Sticky.FrontPicBytes = bytes);
                     }
                 }, 
@@ -173,6 +183,8 @@ namespace StickyTiles {
         }
 
         private void ShowFrontTextColorPicker(object sender, RoutedEventArgs e) {
+            FlurryWP7SDK.Api.LogEvent("Changing front text color");
+
             FrontTextColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
         }
@@ -187,12 +199,16 @@ namespace StickyTiles {
                 r => {
                     var returned = Guide.EndShowMessageBox(r);
                     if (returned == 0) {
+                        FlurryWP7SDK.Api.LogEvent("Changing back color");
+
                         Dispatcher.BeginInvoke(() => {
                             Sticky.BackPicBytes = null;
                             BackColorPickerOverlay.Show();
                             ApplicationBar = OverlayAppbar;
                         });
                     } else if (returned == 1) {
+                        FlurryWP7SDK.Api.LogEvent("Changing back image");
+
                         ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
                     }
                 },
@@ -201,6 +217,8 @@ namespace StickyTiles {
         }
 
         private void ShowBackTextColorPicker(object sender, RoutedEventArgs e) {
+            FlurryWP7SDK.Api.LogEvent("Changed back text color");
+
             BackTextColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
         }
@@ -227,6 +245,8 @@ namespace StickyTiles {
         }
 
         private void About_Click(object sender, EventArgs e) {
+            FlurryWP7SDK.Api.LogEvent("Opened about page");
+
             NavigationService.Navigate(new Uri("/AboutPage.xaml", UriKind.Relative));
         }
 
@@ -320,6 +340,8 @@ namespace StickyTiles {
                 int times = (int)settings[launchedTimesSetting];
                 if (times == launchedTimesLimit) {
                     // Show popup
+                    FlurryWP7SDK.Api.LogEvent("Showing donation popup");
+
                     Guide.BeginShowMessageBox(
                         "Support StickyTiles",
                         "StickyTiles is a completely free, ad-free and open source project.\n\n" + 
@@ -332,9 +354,12 @@ namespace StickyTiles {
                         r => {
                             var returned = Guide.EndShowMessageBox(r);
                             if (returned == 0) {
+                                FlurryWP7SDK.Api.LogEvent("Donate clicked");
                                 var wb = new WebBrowserTask();
                                 wb.Uri = new Uri("http://julianapena.com/donate.html?ref=StickyTiles", UriKind.Absolute);
                                 wb.Show();
+                            } else {
+                                FlurryWP7SDK.Api.LogEvent("Donate dismissed");
                             }
                             settings[launchedTimesSetting] = times + 1;
                         },
