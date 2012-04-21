@@ -1,8 +1,8 @@
-﻿using System.Windows.Media;
-using System.Runtime.Serialization;
-using System.ComponentModel;
-using System.Windows.Media.Imaging;
+﻿using System.ComponentModel;
 using System.IO;
+using System.Runtime.Serialization;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Phone;
 
 namespace StickyTiles {

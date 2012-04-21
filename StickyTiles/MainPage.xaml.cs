@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.IsolatedStorage;
@@ -10,7 +11,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.GamerServices;
-using System.Collections.Generic;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
