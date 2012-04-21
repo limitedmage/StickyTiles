@@ -57,6 +57,9 @@ namespace StickyTiles {
                 if (settings.TryGetValue(id, out sticky)) {
                     Sticky = sticky;
                     DataContext = Sticky;
+
+                    (MainAppbar.Buttons[0] as ApplicationBarIconButton).IconUri = new Uri("/icons/appbar.save.rest.png", UriKind.Relative);
+
                     return;
                 }
 
@@ -120,10 +123,12 @@ namespace StickyTiles {
             var shelltile = GetTile(id);
 
             if (shelltile != null) {
-                shelltile.Delete();
+                shelltile.Update(tile);
+                Focus();
+                MessageBox.Show("Tile saved!");
+            } else {
+                ShellTile.Create(GetTileUri(id), tile);
             }
-
-            ShellTile.Create(GetTileUri(id), tile);
         }
 
         private void ShowFrontColorPicker(object sender, RoutedEventArgs e) {
@@ -198,8 +203,6 @@ namespace StickyTiles {
             };
             
             t.Show();
-
-            
         }
     }
 }
