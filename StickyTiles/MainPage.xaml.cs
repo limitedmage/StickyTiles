@@ -11,6 +11,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.GamerServices;
+using System.Text.RegularExpressions;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
@@ -57,6 +58,10 @@ namespace StickyTiles {
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e) {
+            if (e.NavigationMode == System.Windows.Navigation.NavigationMode.New) {
+                CreateDonationPopup();
+            }
+
             Sticky sticky;
             if (NavigationContext.QueryString.TryGetValue("tile", out id) && settings.TryGetValue(id, out sticky)) {
                 // Launching pinned sticky
@@ -277,9 +282,12 @@ namespace StickyTiles {
             var worker = new BackgroundWorker();
 
             worker.DoWork += (s, e) => {
+                var regex = new Regex(@"^\d+$");
+
                 for (int i = 0; i < settings.Count; i++) {
                     var id = settings.ElementAt(i).Key;
-                    if (GetTile(id) == null) {
+                    
+                    if (regex.IsMatch(id) && GetTile(id) == null) {
                         var frontfile = GetTileFilename(id);
                         var backfile = GetTileFilename(id);
 
@@ -295,6 +303,46 @@ namespace StickyTiles {
             };
 
             worker.RunWorkerAsync();
+        }
+
+        #endregion
+
+        #region Donation reminder
+
+        private void CreateDonationPopup() {
+            var launchedTimesSetting = "LaunchedTimes";
+            var launchedTimesLimit = 10;
+
+            if (settings.Contains(launchedTimesSetting)) {
+                int times = (int)settings[launchedTimesSetting];
+                if (times == launchedTimesLimit) {
+                    // Show popup
+                    Guide.BeginShowMessageBox(
+                        "Support StickyTiles",
+                        "StickyTiles is a completely free, ad-free and open source project.\n\n" + 
+                            "If you like the app and want to support it, how about " +
+                            "buying me a cup of coffee to help me stay up at night coding?\n\n" +
+                            "Either way, I won't bug you again :)",
+                        new List<string> { "sure!", "no, thanks" },
+                        0,
+                        MessageBoxIcon.Alert,
+                        r => {
+                            var returned = Guide.EndShowMessageBox(r);
+                            if (returned == 0) {
+                                var wb = new WebBrowserTask();
+                                wb.Uri = new Uri("http://julianapena.com/donate.html?ref=StickyTiles", UriKind.Absolute);
+                                wb.Show();
+                            }
+                            settings[launchedTimesSetting] = times + 1;
+                        },
+                        null
+                    );
+                } else if (times < launchedTimesLimit) {
+                    settings[launchedTimesSetting] = times + 1;
+                }
+            } else {
+                settings[launchedTimesSetting] = 1;
+            }
         }
 
         #endregion
