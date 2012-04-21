@@ -219,7 +219,7 @@ namespace StickyTiles {
         }
 
         private void About_Click(object sender, EventArgs e) {
-            MessageBox.Show("Created by Juliana Peña\nhttp://julianapena.com", "StickyTiles 2.0", MessageBoxButton.OK);
+            NavigationService.Navigate(new Uri("/AboutPage.xaml", UriKind.Relative));
         }
 
         #endregion
