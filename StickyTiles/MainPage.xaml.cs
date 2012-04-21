@@ -14,15 +14,18 @@ namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
         
         #region Properties
+
         private IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
         private string id = null;
-
+        
         public Sticky Sticky { get; set; }
 
         private ApplicationBar MainAppbar;
         private ApplicationBar OverlayAppbar;
         
         #endregion
+
+        #region Creation and navigation events
 
         // Constructor
         public MainPage() {
@@ -53,38 +56,41 @@ namespace StickyTiles {
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e) {
             Sticky sticky;
-            if (NavigationContext.QueryString.TryGetValue("tile", out id)) {
-                if (settings.TryGetValue(id, out sticky)) {
-                    Sticky = sticky;
-                    DataContext = Sticky;
-
-                    (MainAppbar.Buttons[0] as ApplicationBarIconButton).IconUri = new Uri("/icons/appbar.save.rest.png", UriKind.Relative);
-
-                    return;
-                }
-
-                MessageBox.Show(id);
+            if (NavigationContext.QueryString.TryGetValue("tile", out id) && settings.TryGetValue(id, out sticky)) {
+                // Launching pinned sticky
+                Sticky = sticky;
+                // Change pin button to save button
+                var button = (MainAppbar.Buttons[0] as ApplicationBarIconButton);
+                button.IconUri = new Uri("/icons/appbar.save.rest.png", UriKind.Relative);
+                button.Text = "save";
+            } else if (State.ContainsKey("sticky")) {
+                // Restore from tombstone
+                Sticky = State["sticky"] as Sticky;
+             } else {
+                // New sticky
+                Sticky = new Sticky {
+                    FrontColor = (Color)App.Current.Resources["PhoneAccentColor"],
+                    BackColor = (Color)App.Current.Resources["PhoneAccentColor"],
+                    FrontTextColor = Colors.White,
+                    BackTextColor = Colors.White,
+                    FrontSize = 20,
+                    BackSize = 20
+                };
             }
 
-            Sticky = new Sticky {
-                FrontColor = (Color)App.Current.Resources["PhoneAccentColor"],
-                BackColor = (Color)App.Current.Resources["PhoneAccentColor"],
-                FrontTextColor = Colors.White,
-                BackTextColor = Colors.White,
-                FrontSize = 20,
-                BackSize = 20
-            };
             DataContext = Sticky;
+        }
+
+        protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e) {
+            // Save sticky for tombstoning
+            State["sticky"] = Sticky;
             
+            base.OnNavigatedFrom(e);
         }
 
-        Uri GetTileUri(string id) {
-            return new Uri("/MainPage.xaml?tile=" + id, UriKind.Relative);
-        }
+        #endregion
 
-        ShellTile GetTile(string id) {
-            return ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri == GetTileUri(id));
-        }
+        #region Button handlers
 
         private void PinButton_Click(object sender, EventArgs e) {
             if (id == null) {
@@ -125,7 +131,7 @@ namespace StickyTiles {
             if (shelltile != null) {
                 shelltile.Update(tile);
                 Focus();
-                MessageBox.Show("Tile saved!");
+                MessageBox.Show("Tile updated!");
             } else {
                 ShellTile.Create(GetTileUri(id), tile);
             }
@@ -141,6 +147,10 @@ namespace StickyTiles {
             ApplicationBar = OverlayAppbar;
         }
 
+        private void ShowFrontPicPicker(object sender, RoutedEventArgs e) {
+            ShowPicPicker(bytes => Sticky.FrontPicBytes = bytes);
+        }
+
         private void ShowBackColorPicker(object sender, RoutedEventArgs e) {
             BackColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
@@ -149,6 +159,10 @@ namespace StickyTiles {
         private void ShowBackTextColorPicker(object sender, RoutedEventArgs e) {
             BackTextColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
+        }
+
+        private void ShowFrontBackPicker(object sender, RoutedEventArgs e) {
+            ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
         }
 
         private void ClosePickers(object sender, EventArgs e) {
@@ -176,7 +190,11 @@ namespace StickyTiles {
             MessageBox.Show("Created by Juliana Peña\nhttp://julianapena.com", "StickyTiles 2.0", MessageBoxButton.OK);
         }
 
-        private void ShowFrontPicPicker(object sender, RoutedEventArgs e) {
+        #endregion
+
+        #region Helpers
+
+        private void ShowPicPicker(Action<byte[]> callback) {
             var t = new PhotoChooserTask();
             t.PixelHeight = 173;
             t.PixelWidth = 173;
@@ -185,24 +203,35 @@ namespace StickyTiles {
             t.Completed += (s, ev) => {
                 if (ev.TaskResult == TaskResult.OK) {
                     if (ev.ChosenPhoto != null) {
-                        var stream = ev.ChosenPhoto;
-                        stream.Position = 0;
-
-                        var ms = new MemoryStream();
-                        var buffer = new byte[stream.Length];
-                        int read;
-                        while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
-                            ms.Write(buffer, 0, read);
-                        }
-
-                        Dispatcher.BeginInvoke(() => {
-                            Sticky.FrontPicBytes = ms.ToArray();
-                        });
+                        Dispatcher.BeginInvoke(() => callback(GetBytesFromStream(ev.ChosenPhoto)));
                     }
                 }
             };
-            
+
             t.Show();
         }
+
+        private byte[] GetBytesFromStream(Stream stream) {
+            stream.Position = 0;
+
+            var ms = new MemoryStream();
+            var buffer = new byte[stream.Length];
+            int read;
+            while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+                ms.Write(buffer, 0, read);
+            }
+
+            return ms.ToArray();
+        }
+
+        Uri GetTileUri(string id) {
+            return new Uri("/MainPage.xaml?tile=" + id, UriKind.Relative);
+        }
+
+        ShellTile GetTile(string id) {
+            return ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri == GetTileUri(id));
+        }
+
+        #endregion
     }
 }
