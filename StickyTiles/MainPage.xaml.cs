@@ -119,7 +119,10 @@ namespace StickyTiles {
             }
 
             StandardTileData tile = new StandardTileData {
-                BackgroundImage = new Uri("isostore:/" + frontFilename)
+                BackgroundImage = new Uri("isostore:/" + frontFilename),
+                BackBackgroundImage = new Uri("IDontExist", UriKind.Relative), // UGLY HACK
+                BackContent = string.Empty,
+                BackTitle = string.Empty
             };
 
             if (EnableBack.IsChecked.GetValueOrDefault()) {
