@@ -15,9 +15,10 @@ Pin your notes
 Pin short double-sided sticky notes to your start screen! Choose text, color, font size, and background image for both the front and back of the sticky tile.
 
 New in 3.0:
+- Use images as sticky backgrounds!
 - New streamlined and less cluttered UI
 - Edited tiles are now updated, not deleted and re-created
-- Use images as sticky backgrounds
+- Now supports spellcheck and autocorrect
 
 Created by Juliana Peña http://julianapena.com
 

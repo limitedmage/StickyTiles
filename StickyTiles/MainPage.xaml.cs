@@ -143,7 +143,7 @@ namespace StickyTiles {
             if (shelltile != null) {
                 shelltile.Update(tile);
                 Focus();
-                MessageBox.Show("Tile updated!");
+                MessageBox.Show("Your updated tile should be in your start screen.", "Tile updated", MessageBoxButton.OK);
             } else {
                 ShellTile.Create(GetTileUri(id), tile);
             }
