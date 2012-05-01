@@ -114,12 +114,12 @@
                                         Header="BACK BACKGROUND">
                         <toolkit:ListPicker.FullModeItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" Margin="0,12" />
+                                <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" Margin="0,12" />
                             </DataTemplate>
                         </toolkit:ListPicker.FullModeItemTemplate>
                     </toolkit:ListPicker>
 
-                    <Rectangle Width="173" Height="173">
+                    <Rectangle Width="173" Height="173" Grid.Row="1">
                         <Rectangle.Fill>
                             <SolidColorBrush Color="{StaticResource PhoneAccentColor}" />
                         </Rectangle.Fill>

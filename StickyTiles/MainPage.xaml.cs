@@ -183,30 +183,7 @@ namespace StickyTiles {
         }
 
         private void ShowBackColorPicker(object sender, RoutedEventArgs e) {
-            Guide.BeginShowMessageBox(
-                "Back Tile Background",
-                "Use color or image as tile background?",
-                new List<string> { "color", "image" },
-                0,
-                MessageBoxIcon.Alert,
-                r => {
-                    var returned = Guide.EndShowMessageBox(r);
-                    if (returned == 0) {
-                        FlurryWP7SDK.Api.LogEvent("Changing back color");
-
-                        Dispatcher.BeginInvoke(() => {
-                            Sticky.BackPicBytes = null;
-                            BackColorPickerOverlay.Show();
-                            ApplicationBar = OverlayAppbar;
-                        });
-                    } else if (returned == 1) {
-                        FlurryWP7SDK.Api.LogEvent("Changing back image");
-
-                        ShowPicPicker(bytes => Sticky.BackPicBytes = bytes);
-                    }
-                },
-                null
-            );
+            BackBackgroundPicker.Open();
         }
 
         private void ShowBackTextColorPicker(object sender, RoutedEventArgs e) {
@@ -221,7 +198,7 @@ namespace StickyTiles {
                 Dispatcher.BeginInvoke(() => {
                     var picker = sender as ListPicker;
 
-                    if (picker == FrontBackgroundPicker) {
+                    if (picker != null && picker == FrontBackgroundPicker) {
                         if (picker.SelectedIndex == 1) {
                             // transparent
                             FlurryWP7SDK.Api.LogEvent("Changing front transparent");
@@ -231,7 +208,7 @@ namespace StickyTiles {
                             // color
                             FlurryWP7SDK.Api.LogEvent("Changing front color");
                             Sticky.FrontPicBytes = null;
-                            if (Sticky.FrontColor == Colors.Transparent) Sticky.FrontColor = Colors.Red;
+                            /*if (Sticky.FrontColor == Colors.Transparent)*/ Sticky.FrontColor = Colors.Red;
                             FrontColorPickerOverlay.Show();
                             ApplicationBar = OverlayAppbar;
                         } else if (picker.SelectedIndex == 3) {
@@ -243,8 +220,28 @@ namespace StickyTiles {
                             });
                         }
                         picker.SelectedIndex = 0;
-                    } else {
-
+                    } else if (picker != null && picker == BackBackgroundPicker) {
+                        if (picker.SelectedIndex == 1) {
+                            // transparent
+                            FlurryWP7SDK.Api.LogEvent("Changing back transparent");
+                            Sticky.BackPicBytes = null;
+                            Sticky.BackColor = Colors.Transparent;
+                        } else if (picker.SelectedIndex == 2) {
+                            // color
+                            FlurryWP7SDK.Api.LogEvent("Changing back color");
+                            Sticky.BackPicBytes = null;
+                            if (Sticky.BackColor == Colors.Transparent) Sticky.BackColor = Colors.Red;
+                            FrontColorPickerOverlay.Show();
+                            ApplicationBar = OverlayAppbar;
+                        } else if (picker.SelectedIndex == 3) {
+                            // image
+                            FlurryWP7SDK.Api.LogEvent("Changing back image");
+                            ShowPicPicker(bytes => {
+                                Sticky.BackPicBytes = bytes;
+                                Sticky.BackColor = Colors.Transparent;
+                            });
+                        }
+                        picker.SelectedIndex = 0;
                     }
                 });
             }
