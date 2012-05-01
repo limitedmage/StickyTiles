@@ -84,6 +84,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sticky.cs" />
+    <Compile Include="ToolStackCRCLib\ToolStackCRCLib.cs" />
+    <Compile Include="ToolStackCRCLib\ToolStackPNGWriterLib.cs" />
+    <Compile Include="ToolStackCRCLib\ToolStackPNGWriterWBext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

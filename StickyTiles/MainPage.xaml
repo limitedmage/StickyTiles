@@ -29,9 +29,27 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    
+
+                    <toolkit:ListPicker Name="FrontBackgroundPicker"
+                                        SelectionChanged="BackgroundPicker_SelectionChanged"
+                                        Visibility="Collapsed"
+                                        ExpansionMode="FullScreenOnly"
+                                        Header="FRONT BACKGROUND">
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" Margin="0,12" />
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+
+                    <Rectangle Width="173" Height="173">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{StaticResource PhoneAccentColor}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+
                     <Grid Name="TilePreview" Width="173" Height="173" VerticalAlignment="Top">
-                        <Rectangle Width="173" Height="173">
+                        <Rectangle Name="FrontColorRect" Width="173" Height="173">
                             <Rectangle.Fill>
                                 <SolidColorBrush Color="{Binding FrontColor}" />
                             </Rectangle.Fill>
@@ -56,7 +74,11 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12" />
+                        <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12">
+                            <c4f:SuperSlider.Thumb>
+                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" Width="20" />
+                            </c4f:SuperSlider.Thumb>
+                        </c4f:SuperSlider>
 
                         <Button Content="Background" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
                             <Button.Background>
@@ -85,6 +107,24 @@
 
                     <CheckBox Name="EnableBack" IsChecked="{Binding HasBack, Mode=TwoWay}" Content="Enable back tile" Margin="-12,-12,-12,0" />
 
+                    <toolkit:ListPicker Name="BackBackgroundPicker"
+                                        SelectionChanged="BackgroundPicker_SelectionChanged"
+                                        Visibility="Collapsed"
+                                        ExpansionMode="FullScreenOnly"
+                                        Header="BACK BACKGROUND">
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="{StaticResource PhoneFontSizeExtraLarge}" Margin="0,12" />
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+
+                    <Rectangle Width="173" Height="173">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{StaticResource PhoneAccentColor}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+
                     <Grid Name="BackTilePreview" Width="173" Height="173" VerticalAlignment="Top" Grid.Row="1">
                         <Rectangle Width="173" Height="173">
                             <Rectangle.Fill>
@@ -111,7 +151,11 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" IsEnabled="{Binding HasBack}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12" />
+                        <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" IsEnabled="{Binding HasBack}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12">
+                            <c4f:SuperSlider.Thumb>
+                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" Width="20" />
+                            </c4f:SuperSlider.Thumb>
+                        </c4f:SuperSlider>
 
                         <Button Content="Background" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
                             <Button.Background>

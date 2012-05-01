@@ -12,11 +12,20 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.GamerServices;
+using ToolStackPNGWriterLib;
+using System.Windows.Controls;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
         
         #region Properties
+
+        private static List<BackgroundType> BackgroundType = new List<BackgroundType> { 
+            new BackgroundType {Name="invisible", Visibility=Visibility.Collapsed},
+            new BackgroundType {Name="theme", Visibility=Visibility.Visible},
+            new BackgroundType {Name="color", Visibility=Visibility.Visible},
+            new BackgroundType {Name="image", Visibility=Visibility.Visible}
+        };
 
         private IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
         private string id = null;
@@ -78,8 +87,8 @@ namespace StickyTiles {
              } else {
                 // New sticky
                 Sticky = new Sticky {
-                    FrontColor = (Color)App.Current.Resources["PhoneAccentColor"],
-                    BackColor = (Color)App.Current.Resources["PhoneAccentColor"],
+                    FrontColor = Colors.Transparent,
+                    BackColor = Colors.Transparent,
                     FrontTextColor = Colors.White,
                     BackTextColor = Colors.White,
                     FrontSize = 20,
@@ -90,6 +99,9 @@ namespace StickyTiles {
             DataContext = Sticky;
 
             DeleteOldTiles();
+
+            FrontBackgroundPicker.ItemsSource = BackgroundType;
+            BackBackgroundPicker.ItemsSource = BackgroundType;
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e) {
@@ -112,11 +124,12 @@ namespace StickyTiles {
             settings[id] = Sticky;
 
             WriteableBitmap front = new WriteableBitmap(TilePreview, null);
+            CompensateForRender(front.Pixels);
             string frontFilename = GetTileFilename(id);
 
             using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
                 using (IsolatedStorageFileStream fs = isf.CreateFile(frontFilename)) {
-                    front.SaveJpeg(fs, front.PixelWidth, front.PixelHeight, 0, 100);
+                    front.WritePNG(fs);
                 }
             }
 
@@ -128,12 +141,15 @@ namespace StickyTiles {
             };
 
             if (EnableBack.IsChecked.GetValueOrDefault()) {
+                FlurryWP7SDK.Api.LogEvent("Enabling tile");
+
                 WriteableBitmap back = new WriteableBitmap(BackTilePreview, null);
+                CompensateForRender(back.Pixels);
                 string backFilename = GetTileFilename(id, true);
 
                 using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
                     using (IsolatedStorageFileStream fs = isf.CreateFile(backFilename)) {
-                        back.SaveJpeg(fs, back.PixelWidth, back.PixelHeight, 0, 100);
+                        back.WritePNG(fs);
                     }
                 }
 
@@ -156,30 +172,7 @@ namespace StickyTiles {
         }
 
         private void ShowFrontColorPicker(object sender, RoutedEventArgs e) {
-            Guide.BeginShowMessageBox(
-                "Front Tile Background", 
-                "Use color or image as tile background?", 
-                new List<string> { "Color", "Image" }, 
-                0, 
-                MessageBoxIcon.Alert, 
-                r => {
-                    var returned = Guide.EndShowMessageBox(r);
-                    if (returned == 0) {
-                        FlurryWP7SDK.Api.LogEvent("Changing front color");
-
-                        Dispatcher.BeginInvoke(() => {
-                            Sticky.FrontPicBytes = null;
-                            FrontColorPickerOverlay.Show();
-                            ApplicationBar = OverlayAppbar;
-                        });
-                    } else if (returned == 1) {
-                        FlurryWP7SDK.Api.LogEvent("Changing front image");
-
-                        ShowPicPicker(bytes => Sticky.FrontPicBytes = bytes);
-                    }
-                }, 
-                null
-            );
+            FrontBackgroundPicker.Open();
         }
 
         private void ShowFrontTextColorPicker(object sender, RoutedEventArgs e) {
@@ -221,6 +214,40 @@ namespace StickyTiles {
 
             BackTextColorPickerOverlay.Show();
             ApplicationBar = OverlayAppbar;
+        }
+
+        private void BackgroundPicker_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e) {
+            if (e.RemovedItems.Count > 0) {
+                Dispatcher.BeginInvoke(() => {
+                    var picker = sender as ListPicker;
+
+                    if (picker == FrontBackgroundPicker) {
+                        if (picker.SelectedIndex == 1) {
+                            // transparent
+                            FlurryWP7SDK.Api.LogEvent("Changing front transparent");
+                            Sticky.FrontPicBytes = null;
+                            Sticky.FrontColor = Colors.Transparent;
+                        } else if (picker.SelectedIndex == 2) {
+                            // color
+                            FlurryWP7SDK.Api.LogEvent("Changing front color");
+                            Sticky.FrontPicBytes = null;
+                            if (Sticky.FrontColor == Colors.Transparent) Sticky.FrontColor = Colors.Red;
+                            FrontColorPickerOverlay.Show();
+                            ApplicationBar = OverlayAppbar;
+                        } else if (picker.SelectedIndex == 3) {
+                            // image
+                            FlurryWP7SDK.Api.LogEvent("Changing front image");
+                            ShowPicPicker(bytes => {
+                                Sticky.FrontPicBytes = bytes;
+                                Sticky.FrontColor = Colors.Transparent;
+                            });
+                        }
+                        picker.SelectedIndex = 0;
+                    } else {
+
+                    }
+                });
+            }
         }
 
         private void ClosePickers(object sender, EventArgs e) {
@@ -295,9 +322,9 @@ namespace StickyTiles {
 
         string GetTileFilename(string id, bool back = false) {
             if (!back) {
-                return "Shared/ShellContent/" + id + "-front.jpg";
+                return "Shared/ShellContent/" + id + "-front.png";
             } else {
-                return "Shared/ShellContent/" + id + "-back.jpg";
+                return "Shared/ShellContent/" + id + "-back.png";
             }
         }
 
@@ -326,6 +353,32 @@ namespace StickyTiles {
             };
 
             worker.RunWorkerAsync();
+        }
+
+        public void CompensateForRender(int[] bitmapPixels) {
+            // Fix antialiasing for WriteableBitmaps generated from transparent UIElements
+            // Thanks to http://blog.jayway.com/2012/04/03/advanced-transparent-live-tiles-with-count-for-windows-phone/
+
+            if (bitmapPixels.Length == 0) return;
+
+            for (int i = 0; i < bitmapPixels.Length; i++) {
+                uint pixel = unchecked((uint)bitmapPixels[i]);
+
+                double a = (pixel >> 24) & 255;
+                if ((a == 255) || (a == 0)) continue;
+
+                double r = (pixel >> 16) & 255;
+                double g = (pixel >> 8) & 255;
+                double b = (pixel) & 255;
+
+                double factor = 255 / a;
+                uint newR = (uint)Math.Round(r * factor);
+                uint newG = (uint)Math.Round(g * factor);
+                uint newB = (uint)Math.Round(b * factor);
+
+                // compose
+                bitmapPixels[i] = unchecked((int)((pixel & 0xFF000000) | (newR << 16) | (newG << 8) | newB));
+            }
         }
 
         #endregion
@@ -374,5 +427,10 @@ namespace StickyTiles {
         }
 
         #endregion
+    }
+
+    public class BackgroundType {
+        public string Name { get; set; }
+        public Visibility Visibility { get; set; }
     }
 }
