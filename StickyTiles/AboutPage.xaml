@@ -37,7 +37,7 @@
 
                 <Paragraph FontSize="{StaticResource PhoneFontSizeMediumLarge}">
                     Created by
-                    <Hyperlink TargetName="_blank" NavigateUri="http://julianapena.com">
+                    <Hyperlink TargetName="_blank" NavigateUri="http://julip.co">
                         <Run Foreground="{StaticResource PhoneAccentBrush}">Juliana Peña</Run>
                     </Hyperlink>
                 </Paragraph>
@@ -55,7 +55,7 @@
 
                 <Paragraph FontSize="{StaticResource PhoneFontSizeMedium}">
                     Like this app and want to support it?
-                    <Hyperlink TargetName="_blank" NavigateUri="http://julianapena.com/donate.html?ref=StickyTiles">
+                    <Hyperlink TargetName="_blank" NavigateUri="http://julip.co/donate.html?ref=StickyTiles">
                         <Run Foreground="{StaticResource PhoneAccentBrush}">Buy me a cup of coffee</Run>
                     </Hyperlink> 
                     so I can stay up at night making more awesome apps!
@@ -67,8 +67,10 @@
                     StickyTiles uses components from the
                     <Hyperlink TargetName="_blank" NavigateUri="http://silverlight.codeplex.com/">
                         <Run Foreground="{StaticResource PhoneAccentBrush}">Silverlight Toolkit</Run>
-                    </Hyperlink>
-                    and the
+                    </Hyperlink>, the
+                    <Hyperlink TargetName="_blank" NavigateUri="http://toolstack.com/libraries/crclib">
+                        <Run Foreground="{StaticResource PhoneAccentBrush}">Toolstack CRCLib</Run>
+                    </Hyperlink>, and the
                     <Hyperlink TargetName="_blank" NavigateUri="http://coding4fun.codeplex.com/">
                         <Run Foreground="{StaticResource PhoneAccentBrush}">Coding4Fun Toolkit</Run>
                     </Hyperlink>.

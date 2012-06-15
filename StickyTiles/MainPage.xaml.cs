@@ -12,8 +12,6 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Tasks;
 using Microsoft.Xna.Framework.GamerServices;
-using ToolStackPNGWriterLib;
-using System.Windows.Controls;
 
 namespace StickyTiles {
     public partial class MainPage : PhoneApplicationPage {
@@ -55,9 +53,10 @@ namespace StickyTiles {
             pin.Click += PinButton_Click;
             MainAppbar.Buttons.Add(pin);
 
-            ApplicationBarMenuItem about = new ApplicationBarMenuItem("about");
+            ApplicationBarIconButton about = new ApplicationBarIconButton(new Uri("/icons/appbar.questionmark.rest.png", UriKind.Relative));
+            about.Text = "about";
             about.Click += About_Click;
-            MainAppbar.MenuItems.Add(about);
+            MainAppbar.Buttons.Add(about);
 
             OverlayAppbar = new ApplicationBar();
             ApplicationBarIconButton ok = new ApplicationBarIconButton(new Uri("/icons/appbar.check.rest.png", UriKind.Relative));
@@ -406,7 +405,7 @@ namespace StickyTiles {
                             if (returned == 0) {
                                 FlurryWP7SDK.Api.LogEvent("Donate clicked");
                                 var wb = new WebBrowserTask();
-                                wb.Uri = new Uri("http://julianapena.com/donate.html?ref=StickyTiles", UriKind.Absolute);
+                                wb.Uri = new Uri("http://julip.co/donate.html?ref=StickyTiles", UriKind.Absolute);
                                 wb.Show();
                             } else {
                                 FlurryWP7SDK.Api.LogEvent("Donate dismissed");

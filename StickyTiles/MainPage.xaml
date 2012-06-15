@@ -71,27 +71,33 @@
                             
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-
-                        <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12">
+                        
+                        <TextBlock TextAlignment="Center" FontSize="24" VerticalAlignment="Bottom" Margin="0,-50,0,0">A</TextBlock>
+                        
+                        <c4f:SuperSlider Value="{Binding FrontSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,0,-20">
                             <c4f:SuperSlider.Thumb>
-                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" Width="20" />
+                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" />
                             </c4f:SuperSlider.Thumb>
                         </c4f:SuperSlider>
 
-                        <Button Content="Background" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
+                        <TextBlock Grid.Row="3" TextAlignment="Center" FontSize="14" VerticalAlignment="Top" Margin="0,-12,0,7">A</TextBlock>
+
+                        <Button Content="Background" Click="ShowFrontColorPicker" Foreground="White" Margin="0,-12,0,0" Grid.Column="1" Grid.RowSpan="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding FrontColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="Foreground" Click="ShowFrontTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
+                        <Button Content="Foreground" Click="ShowFrontTextColorPicker" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2" Grid.RowSpan="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding FrontTextColor}" />
                             </Button.Background>
                         </Button>
 
-                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding FrontText, Mode=TwoWay}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
@@ -148,27 +154,33 @@
 
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" IsEnabled="{Binding HasBack}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.RowSpan="2" Margin="0,0,0,12">
+                        <TextBlock TextAlignment="Center" FontSize="24" VerticalAlignment="Bottom" Margin="0,-50,0,0">A</TextBlock>
+
+                        <c4f:SuperSlider Value="{Binding BackSize, Mode=TwoWay}" Minimum="10" Maximum="50" Step="2" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,0,-20">
                             <c4f:SuperSlider.Thumb>
-                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" Width="20" />
+                                <Rectangle Fill="{StaticResource PhoneForegroundBrush}" Height="15" />
                             </c4f:SuperSlider.Thumb>
                         </c4f:SuperSlider>
 
-                        <Button Content="Background" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1">
+                        <TextBlock Grid.Row="3" TextAlignment="Center" FontSize="14" VerticalAlignment="Top" Margin="0,-12,0,7">A</TextBlock>
+
+                        <Button Content="Background" Click="ShowBackColorPicker" IsEnabled="{Binding HasBack}" Foreground="White" Margin="0,-12,0,0" Grid.Column="1" Grid.RowSpan="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding BackColor}" />
                             </Button.Background>
                         </Button>
-                        <Button Content="Foreground" Click="ShowBackTextColorPicker" IsEnabled="{Binding HasBack}" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2">
+                        <Button Content="Foreground" Click="ShowBackTextColorPicker" IsEnabled="{Binding HasBack}" Foreground="Black" Margin="0,-12,0,0" Grid.Column="2" Grid.RowSpan="2">
                             <Button.Background>
                                 <SolidColorBrush Color="{Binding BackTextColor}" />
                             </Button.Background>
                         </Button>
 
-                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" IsEnabled="{Binding HasBack}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+                        <TextBox InputScope="Text" AcceptsReturn="True" Text="{Binding BackText, Mode=TwoWay}" IsEnabled="{Binding HasBack}" TextWrapping="Wrap" c4fb:TextBinding.UpdateSourceOnChange="True" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" />
                     </Grid>
                 </Grid>
             </controls:PivotItem>
@@ -191,14 +203,5 @@
             <c4f:ColorPicker Name="BackTextColorPicker" Height="500" Color="{Binding BackTextColor, Mode=TwoWay}" Margin="24,0" />
         </c4f:ProgressOverlay>
     </Grid>
-    
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton Text="pin" IconUri="/icons/appbar.save.rest.png" Click="PinButton_Click" />
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="about" Click="About_Click" />
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>
